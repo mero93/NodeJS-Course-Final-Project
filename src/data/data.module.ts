@@ -4,6 +4,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { config } from 'dotenv';
 import { User } from '../models/entities/user.entity';
 import { Vinyl } from '../models/entities/vinyl.entity';
+import { Order } from '../models/entities/order.entity';
+import { OrderItem } from '../models/entities/orderItem.entity';
+import { Review } from '../models/entities/review.entity';
+import { ReviewSubscriber } from '../models/entities/review.subscriber';
 
 config();
 
@@ -14,14 +18,15 @@ config();
       inject: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
-        host: configService.get('POSTGRES_HOST'),
-        port: configService.get('POSTGRES_PORT'),
-        username: configService.get('POSTGRES_USER'),
-        password: configService.get('POSTGRES_PASSWORD'),
-        database: configService.get('POSTGRES_DB'),
+        host: configService.getOrThrow('POSTGRES_HOST'),
+        port: configService.getOrThrow<number>('POSTGRES_PORT'),
+        username: configService.getOrThrow('POSTGRES_USER'),
+        password: configService.getOrThrow('POSTGRES_PASSWORD'),
+        database: configService.getOrThrow('POSTGRES_DB'),
         autoLoadEntities: true,
-        entities: [User, Vinyl],
-        synchronize: true,
+        entities: [User, Vinyl, Order, OrderItem, Review, ReviewSubscriber],
+        migrations: ['./src/data/migrations/**'],
+        synchronize: false,
       }),
     }),
   ],

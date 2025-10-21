@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateVinylDto, UpdateVinylDto } from '../models/dtos/vinyl.dto';
+import { CreateVinylDto, UpdateVinylDto } from '../../models/dtos/vinyl.dto';
 
 @Injectable()
 export class VinylService {

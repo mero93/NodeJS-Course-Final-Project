@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { VinylService } from './vinyl.service';
-import { CreateVinylDto, UpdateVinylDto } from '../models/dtos/vinyl.dto';
+import { CreateVinylDto, UpdateVinylDto } from '../../models/dtos/vinyl.dto';
 
 @Controller('vinyl')
 export class VinylController {
