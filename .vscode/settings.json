@@ -1,3 +1,8 @@
 {
-    "files.eol": "\n"
+	// Enable format on save.
+	"editor.formatOnSave": true,
+	// Use the Prettier extension to format TypeScript files.
+	"[typescript]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	}
 }
