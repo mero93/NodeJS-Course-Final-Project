@@ -7,7 +7,7 @@ import { Vinyl } from '../models/entities/vinyl.entity';
 import { Order } from '../models/entities/order.entity';
 import { OrderItem } from '../models/entities/orderItem.entity';
 import { Review } from '../models/entities/review.entity';
-import { ReviewSubscriber } from '../models/entities/review.subscriber';
+import { ReviewSubscriber } from '../models/subscribers/review.subscriber';
 
 config();
 

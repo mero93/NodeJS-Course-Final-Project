@@ -1,8 +1,7 @@
-import { Column, Entity, OneToMany } from 'typeorm';
+import { Column, OneToMany } from 'typeorm';
 import { AbstractEntity } from './abstract.entity';
 import { OrderItem } from './orderItem.entity';
 
-@Entity()
 export class Order extends AbstractEntity<Order> {
   @Column({ type: 'int' })
   totalItemCount: number;

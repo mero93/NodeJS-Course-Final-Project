@@ -6,7 +6,7 @@ import { OrderItem } from './src/models/entities/orderItem.entity';
 import { Review } from './src/models/entities/review.entity';
 import { User } from './src/models/entities/user.entity';
 import { Vinyl } from './src/models/entities/vinyl.entity';
-import { ReviewSubscriber } from './src/models/entities/review.subscriber';
+import { ReviewSubscriber } from './src/models/subscribers/review.subscriber';
 
 config();
 

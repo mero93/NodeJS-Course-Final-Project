@@ -6,8 +6,8 @@ import {
   RemoveEvent,
   UpdateEvent,
 } from 'typeorm';
-import { Review } from './review.entity';
-import { Vinyl } from './vinyl.entity';
+import { Review } from '../entities/review.entity';
+import { Vinyl } from '../entities/vinyl.entity';
 
 @EventSubscriber()
 export class ReviewSubscriber implements EntitySubscriberInterface<Review> {
@@ -32,6 +32,8 @@ export class ReviewSubscriber implements EntitySubscriberInterface<Review> {
   }
 
   private async updateAverageRating(manager: EntityManager, vinylId: number) {
+    console.log(`Updating average rating for Vinyl with ID ${vinylId}`);
+
     const query: { avg: string } = await manager
       .getRepository(Review)
       .createQueryBuilder('review')
@@ -39,8 +41,6 @@ export class ReviewSubscriber implements EntitySubscriberInterface<Review> {
       .where('review.vinylId = :vinylId', { vinylId })
       .getRawOne();
 
-    await manager
-      .getRepository(Vinyl)
-      .update(vinylId, { averageRating: parseFloat(query.avg) || 0 });
+    await manager.getRepository(Vinyl).update(vinylId, { ratingAvg: parseFloat(query.avg) || 0 });
   }
 }
