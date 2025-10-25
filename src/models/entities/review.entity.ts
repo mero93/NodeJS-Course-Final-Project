@@ -16,6 +16,7 @@ export class Review {
   @Column({ type: 'varchar', length: 500, nullable: true })
   comment: string;
 
+  /// Relationships
   @ManyToOne(() => User, (user) => user.reviews, { onDelete: 'CASCADE' })
   user: User;
 

@@ -28,8 +28,8 @@ export default tseslint.config(
     rules: {
       '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/no-floating-promises': 'error',
-      '@typescript-eslint/no-unsafe-argument': 'warn',
-      '@typescript-eslint/no-unused-vars': 'warn',
+      '@typescript-eslint/no-unsafe-argument': 'error',
+      '@typescript-eslint/no-unused-vars': 'error',
       'prettier/prettier': ['error', { useTabs: false }],
     },
   }
