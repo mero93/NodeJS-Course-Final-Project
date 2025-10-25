@@ -1,8 +1,9 @@
 {
-	// Enable format on save.
-	"editor.formatOnSave": true,
-	// Use the Prettier extension to format TypeScript files.
-	"[typescript]": {
-		"editor.defaultFormatter": "esbenp.prettier-vscode"
-	}
+  // Enable format on save.
+  "editor.formatOnSave": true,
+  // Use the Prettier extension to format TypeScript files.
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "cSpell.words": ["dhms"]
 }

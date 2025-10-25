@@ -14,8 +14,7 @@ export class AccessJwtStrategy extends PassportStrategy(Strategy, 'access') {
     });
   }
 
-  // eslint-disable-next-line @typescript-eslint/require-await
-  async validate(payload: Payload) {
+  validate(payload: Payload) {
     return {
       id: payload.sub,
       email: payload.email,

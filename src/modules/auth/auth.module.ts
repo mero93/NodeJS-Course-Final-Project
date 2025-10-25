@@ -4,10 +4,14 @@ import { AuthService } from './auth.service';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AccessJwtStrategy } from './strategies/access.strategy';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from '../../models/entities/user.entity';
+import { RevokedToken } from '../../models/entities/revokedToken.entity';
+import { LocalStrategy } from './strategies/local.strategy';
 
 @Module({
   imports: [
+    TypeOrmModule.forFeature([User, RevokedToken]),
     PassportModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -19,6 +23,6 @@ import { AccessJwtStrategy } from './strategies/access.strategy';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, AccessJwtStrategy],
+  providers: [AuthService, LocalStrategy],
 })
 export class AuthModule {}

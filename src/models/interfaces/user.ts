@@ -14,6 +14,15 @@ export interface Payload {
   email: string;
 }
 
-export class AuthRequest extends Request {
+export interface FullPayload extends Payload {
+  jti: string;
+  exp?: number;
+}
+
+export interface AuthRequest extends Request {
   user: TokenUser;
+}
+
+export interface RefreshRequest extends Request {
+  fullToken: FullPayload;
 }
