@@ -31,6 +31,10 @@ export class AuthService {
   }
 
   async register(user: RegisterUserDto, response: Response) {
+    if (await this.usersRepository.findOneBy({ email: user.email })) {
+      throw new UnauthorizedException('User already exists');
+    }
+
     const newUser = await this.usersRepository.save({
       ...user,
       password: await bcrypt.hash(user.password, 10),

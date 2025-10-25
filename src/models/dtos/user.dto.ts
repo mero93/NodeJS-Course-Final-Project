@@ -10,7 +10,7 @@ export class LoginUserDto {
     }
   )
   @Transform(({ value }: { value: string }) => value.toLowerCase())
-  public readonly email!: string;
+  public readonly email: string;
 
   @IsString()
   @Length(4, 32, {
@@ -19,7 +19,7 @@ export class LoginUserDto {
   @Matches(/^[^\s]+$/, {
     message: 'Password must contain no white spaces',
   })
-  public readonly password!: string;
+  public readonly password: string;
 }
 
 export class RegisterUserDto {
@@ -31,7 +31,7 @@ export class RegisterUserDto {
     message: 'Name must contain only letters',
   })
   @Transform(({ value }: { value: string }) => value.toLowerCase())
-  public readonly name!: string;
+  public readonly name: string;
 
   @IsString()
   @Length(3, 16, {
@@ -41,7 +41,7 @@ export class RegisterUserDto {
     message: 'Last name must contain only letters',
   })
   @Transform(({ value }: { value: string }) => value.toLowerCase())
-  public readonly lastName!: string;
+  public readonly lastName: string;
 
   @IsEmail(
     {},
@@ -50,7 +50,7 @@ export class RegisterUserDto {
     }
   )
   @Transform(({ value }: { value: string }) => value.toLowerCase())
-  public readonly email!: string;
+  public readonly email: string;
 
   @IsString()
   @Length(4, 32, {
@@ -59,11 +59,11 @@ export class RegisterUserDto {
   @Matches(/^[^\s]+$/, {
     message: 'Password must contain no white spaces',
   })
-  public readonly password!: string;
+  public readonly password: string;
 
   @IsString()
   @MatchPasswords('password')
-  public readonly confirmPassword!: string;
+  public readonly confirmPassword: string;
 }
 
 export class UpdateUserDto {
