@@ -7,6 +7,12 @@ export interface TokenUser {
   email: string;
 }
 
+export interface OAuthUser extends Omit<TokenUser, 'id'> {
+  provider: string;
+  providerAccountId: string;
+  avatar?: string;
+}
+
 export interface Payload {
   sub: number;
   name: string;

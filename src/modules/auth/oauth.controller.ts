@@ -10,11 +10,21 @@ export class AuthGithubController {
 
   @Get('github/login')
   @UseGuards(GitHubAuthGuard)
-  login() {}
+  loginGithub() {}
 
-  @Get('callback')
+  @Get('github/callback')
   @UseGuards(GitHubAuthGuard)
-  githubCallback(@Req() req: { user: TokenUser }, @Res({ passthrough: true }) res: Response) {
+  callbackGithub(@Req() req: { user: TokenUser }, @Res({ passthrough: true }) res: Response) {
+    return this.authService.login(req.user, res);
+  }
+
+  @Get('google/login')
+  @UseGuards(GitHubAuthGuard)
+  loginGoogle() {}
+
+  @Get('google/callback')
+  @UseGuards(GitHubAuthGuard)
+  callbackGoogle(@Req() req: { user: TokenUser }, @Res({ passthrough: true }) res: Response) {
     return this.authService.login(req.user, res);
   }
 }

@@ -5,11 +5,12 @@ import { Repository } from 'typeorm';
 import { User } from '../../models/entities/user.entity.js';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
-import { FullPayload, Payload, TokenUser } from '../../models/interfaces/user.js';
+import { FullPayload, OAuthUser, Payload, TokenUser } from '../../models/interfaces/user.js';
 import { Response } from 'express';
 import { RegisterUserDto } from '../../models/dtos/user.dto.js';
 import { RevokedToken } from '../../models/entities/revokedToken.entity.js';
 import { randomUUID } from 'crypto';
+import { OAuthAccount } from '../../models/entities/OAuthAccount.entity.js';
 
 @Injectable()
 export class AuthService {
@@ -18,6 +19,8 @@ export class AuthService {
     private readonly usersRepository: Repository<User>,
     @InjectRepository(RevokedToken)
     private readonly revokedTokensRepository: Repository<RevokedToken>,
+    @InjectRepository(OAuthAccount)
+    private readonly oauthAccountsRepository: Repository<OAuthAccount>,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService
   ) {}
@@ -63,6 +66,38 @@ export class AuthService {
     response.clearCookie('refreshToken');
 
     return { message: 'Logged out successfully' };
+  }
+
+  async validateOAuthUser(oauthUser: OAuthUser): Promise<TokenUser> {
+    const { provider, providerAccountId, ...userData } = oauthUser;
+
+    const existingOAuthAccount = await this.oauthAccountsRepository.findOne({
+      where: { provider, providerAccountId },
+      relations: ['user'],
+    });
+
+    if (existingOAuthAccount) {
+      return {
+        id: existingOAuthAccount.user.id,
+        name: existingOAuthAccount.user.name,
+        lastName: existingOAuthAccount.user.lastName,
+        email: existingOAuthAccount.user.email,
+      };
+    }
+
+    let user = await this.usersRepository.findOneBy({ email: userData.email });
+
+    if (!user) {
+      user = await this.usersRepository.save(userData);
+    }
+
+    await this.oauthAccountsRepository.save({
+      provider,
+      providerAccountId,
+      user,
+    });
+
+    return { id: user.id, name: user.name, lastName: user.lastName, email: user.email };
   }
 
   async refresh(fullToken: FullPayload, response: Response) {

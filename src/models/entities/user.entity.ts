@@ -34,6 +34,6 @@ export class User extends AbstractEntity<User> {
   @OneToMany(() => Review, (review) => review.user)
   reviews: Relation<Review>[];
 
-  @OneToMany(() => OAuthAccount, (oAuthAccount) => oAuthAccount.user)
+  @OneToMany(() => OAuthAccount, (oAuthAccount) => oAuthAccount.user, { cascade: true })
   OAuthAccounts: Relation<OAuthAccount>[];
 }
