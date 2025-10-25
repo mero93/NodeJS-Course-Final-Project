@@ -1,5 +1,5 @@
 import { EntitySubscriberInterface, EventSubscriber, UpdateEvent } from 'typeorm';
-import { Vinyl } from '../entities/vinyl.entity';
+import { Vinyl } from '../entities/vinyl.entity.js';
 
 @EventSubscriber()
 export class VinylSubscriber implements EntitySubscriberInterface<Vinyl> {

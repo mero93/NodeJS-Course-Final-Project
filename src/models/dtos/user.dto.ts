@@ -1,6 +1,6 @@
 import { IsEmail, IsString, Length, Matches, ValidateIf } from 'class-validator';
 import { Transform } from 'class-transformer';
-import { AtLeastOneFieldIsRequired, MatchPasswords } from './customClassValidators';
+import { AtLeastOneFieldIsRequired, MatchPasswords } from './customClassValidators.js';
 
 export class LoginUserDto {
   @IsEmail(

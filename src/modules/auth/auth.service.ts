@@ -2,14 +2,14 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from '../../models/entities/user.entity';
+import { User } from '../../models/entities/user.entity.js';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
-import { FullPayload, Payload, TokenUser } from '../../models/interfaces/user';
+import { FullPayload, Payload, TokenUser } from '../../models/interfaces/user.js';
 import { Response } from 'express';
-import { RegisterUserDto } from '../../models/dtos/user.dto';
-import { RevokedToken } from '../../models/entities/revokedToken.entity';
-import { createId } from '@paralleldrive/cuid2';
+import { RegisterUserDto } from '../../models/dtos/user.dto.js';
+import { RevokedToken } from '../../models/entities/revokedToken.entity.js';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class AuthService {
@@ -50,7 +50,7 @@ export class AuthService {
     try {
       await this.revokedTokensRepository.save({
         jti: fullToken.jti,
-        expiresAt: fullToken.exp ? new Date(fullToken.exp * 1000) : null, // Convert seconds to milliseconds
+        expiresAt: fullToken.exp ? new Date(fullToken.exp * 1000) : null,
       });
     } catch {
       // should add logic for handling token already being revoked
@@ -72,7 +72,6 @@ export class AuthService {
       expiresAt: new Date(fullToken.exp * 1000),
     });
 
-    // 3. Issue new tokens
     return this.signTokens(
       {
         id: fullToken.sub,
@@ -97,7 +96,7 @@ export class AuthService {
     } as JwtSignOptions);
     const refreshToken = this.jwtService.sign(payload, {
       expiresIn: this.configService.getOrThrow<string>('REFRESH_EXPIRES_IN'),
-      jwtid: createId(),
+      jwtid: randomUUID(),
     } as JwtSignOptions);
 
     response.cookie('refreshToken', refreshToken, {

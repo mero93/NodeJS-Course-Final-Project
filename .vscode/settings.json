@@ -5,5 +5,5 @@
   "[typescript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "cSpell.words": ["dhms"]
+  "cSpell.words": ["dhms", "paralleldrive"]
 }

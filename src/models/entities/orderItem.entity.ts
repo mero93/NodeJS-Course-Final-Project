@@ -1,6 +1,6 @@
-import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
-import { Vinyl } from './vinyl.entity';
-import { Order } from './order.entity';
+import { Column, Entity, ManyToOne, PrimaryColumn, Relation } from 'typeorm';
+import { Vinyl } from './vinyl.entity.js';
+import { Order } from './order.entity.js';
 
 @Entity()
 export class OrderItem {
@@ -27,9 +27,10 @@ export class OrderItem {
   })
   sumPrice: number;
 
+  /// Relationships
   @ManyToOne(() => Order, (order) => order.orderItems, { onDelete: 'CASCADE' })
-  order: Order;
+  order: Relation<Order>;
 
   @ManyToOne(() => Vinyl, (vinyl) => vinyl.orderItems)
-  vinyl: Vinyl;
+  vinyl: Relation<Vinyl>;
 }

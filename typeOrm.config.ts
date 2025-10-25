@@ -1,12 +1,16 @@
 import { ConfigService } from '@nestjs/config';
 import { DataSource } from 'typeorm';
 import { config } from 'dotenv';
-import { Order } from './src/models/entities/order.entity';
-import { OrderItem } from './src/models/entities/orderItem.entity';
-import { Review } from './src/models/entities/review.entity';
-import { User } from './src/models/entities/user.entity';
-import { Vinyl } from './src/models/entities/vinyl.entity';
-import { ReviewSubscriber } from './src/models/subscribers/review.subscriber';
+import { Order } from './src/models/entities/order.entity.js';
+import { OrderItem } from './src/models/entities/orderItem.entity.js';
+import { Review } from './src/models/entities/review.entity.js';
+import { User } from './src/models/entities/user.entity.js';
+import { Genre, Style, Vinyl } from './src/models/entities/vinyl.entity.js';
+import { ReviewSubscriber } from './src/models/subscribers/review.subscriber.js';
+import { Author } from './src/models/entities/author.entity.js';
+import { OAuthAccount } from './src/models/entities/OAuthAccount.entity.js';
+import { RevokedToken } from './src/models/entities/revokedToken.entity.js';
+import { VinylSubscriber } from './src/models/subscribers/vinyl.subscriber.js';
 
 config();
 
@@ -20,6 +24,19 @@ export default new DataSource({
   username: configService.getOrThrow('POSTGRES_USER'),
   password: configService.getOrThrow('POSTGRES_PASSWORD'),
   migrations: ['./src/data/migrations/**'],
-  entities: [User, Vinyl, Order, OrderItem, Review, ReviewSubscriber],
+  entities: [
+    User,
+    Vinyl,
+    Order,
+    OrderItem,
+    Review,
+    ReviewSubscriber,
+    RevokedToken,
+    VinylSubscriber,
+    Author,
+    OAuthAccount,
+    Style,
+    Genre,
+  ],
   subscribers: [ReviewSubscriber],
 });

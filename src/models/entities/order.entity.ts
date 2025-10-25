@@ -1,8 +1,9 @@
-import { Column, ManyToOne, OneToMany } from 'typeorm';
-import { AbstractEntity } from './abstract.entity';
-import { OrderItem } from './orderItem.entity';
-import { User } from './user.entity';
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, Relation } from 'typeorm';
+import { AbstractEntity } from './abstract.entity.js';
+import { OrderItem } from './orderItem.entity.js';
+import { User } from './user.entity.js';
 
+@Entity()
 export class Order extends AbstractEntity<Order> {
   @Column({ type: 'int' })
   totalItemCount: number;
@@ -14,13 +15,13 @@ export class Order extends AbstractEntity<Order> {
   })
   orderTotal: number;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 
   /// Relationships
   @OneToMany(() => OrderItem, (orderItem) => orderItem.order, { cascade: true })
-  orderItems: OrderItem[];
+  orderItems: Relation<OrderItem>[];
 
   @ManyToOne(() => User, (user) => user.orders)
-  user: User;
+  user: Relation<User>;
 }

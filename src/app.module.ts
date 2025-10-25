@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
-import { DataModule } from './data/data.module';
-import { UserModule } from './modules/user/user.module';
-import { VinylModule } from './modules/vinyl/vinyl.module';
-import { AuthModule } from './modules/auth/auth.module';
+import { DataModule } from './data/data.module.js';
+import { UserModule } from './modules/user/user.module.js';
+import { VinylModule } from './modules/vinyl/vinyl.module.js';
+import { AuthModule } from './modules/auth/auth.module.js';
 import { ConfigModule } from '@nestjs/config';
-import { OrderModule } from './modules/order/order.module';
-import { TasksModule } from './tasks/tasks.module';
+import { OrderModule } from './modules/order/order.module.js';
+import { ScheduleModule } from '@nestjs/schedule';
+import { TasksModule } from './tasks/tasks.module.js';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { TasksModule } from './tasks/tasks.module';
     VinylModule,
     AuthModule,
     ConfigModule.forRoot({ isGlobal: true }),
+    ScheduleModule.forRoot(),
     OrderModule,
     TasksModule,
   ],

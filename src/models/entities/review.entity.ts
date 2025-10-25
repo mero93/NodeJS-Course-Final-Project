@@ -1,6 +1,6 @@
-import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
-import { User } from './user.entity';
-import { Vinyl } from './vinyl.entity';
+import { Column, Entity, ManyToOne, PrimaryColumn, Relation } from 'typeorm';
+import { User } from './user.entity.js';
+import { Vinyl } from './vinyl.entity.js';
 
 @Entity()
 export class Review {
@@ -18,8 +18,8 @@ export class Review {
 
   /// Relationships
   @ManyToOne(() => User, (user) => user.reviews, { onDelete: 'CASCADE' })
-  user: User;
+  user: Relation<User>;
 
   @ManyToOne(() => Vinyl, (vinyl) => vinyl.reviews, { onDelete: 'CASCADE' })
-  vinyl: Vinyl;
+  vinyl: Relation<Vinyl>;
 }

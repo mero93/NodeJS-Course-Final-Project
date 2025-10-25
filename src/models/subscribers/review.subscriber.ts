@@ -6,8 +6,8 @@ import {
   RemoveEvent,
   UpdateEvent,
 } from 'typeorm';
-import { Review } from '../entities/review.entity';
-import { Vinyl } from '../entities/vinyl.entity';
+import { Review } from '../entities/review.entity.js';
+import { Vinyl } from '../entities/vinyl.entity.js';
 
 @EventSubscriber()
 export class ReviewSubscriber implements EntitySubscriberInterface<Review> {

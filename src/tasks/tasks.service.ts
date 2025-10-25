@@ -2,9 +2,9 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, LessThan, Repository } from 'typeorm';
-import { RevokedToken } from '../models/entities/revokedToken.entity';
+import { RevokedToken } from '../models/entities/revokedToken.entity.js';
 import { ConfigService } from '@nestjs/config';
-import { parseJwtDurationToMilliseconds } from '../helpers/parseJwtDurationToMilSec';
+import { parseJwtDurationToMilliseconds } from '../helpers/parseJwtDurationToMilSec.js';
 
 @Injectable()
 export class TasksService {

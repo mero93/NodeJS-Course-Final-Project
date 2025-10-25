@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { VinylController } from './vinyl.controller';
-import { VinylService } from './vinyl.service';
+import { VinylController } from './vinyl.controller.js';
+import { VinylService } from './vinyl.service.js';
 
 describe('VinylController', () => {
   let controller: VinylController;

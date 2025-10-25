@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto, UpdateUserDto } from '../../models/dtos/user.dto';
 
 @Injectable()
 export class UserService {
-  create(createUserDto: CreateUserDto) {
+  create() {
     return 'This action adds a new user';
   }
 
@@ -15,7 +14,7 @@ export class UserService {
     return `This action returns a #${id} user`;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
+  update(id: number) {
     return `This action updates a #${id} user`;
   }
 

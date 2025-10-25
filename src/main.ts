@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import { AppModule } from './app.module';
+import { AppModule } from './app.module.js';
 import { ConfigService } from '@nestjs/config';
 import cookieParser from 'cookie-parser';
 
@@ -12,7 +12,7 @@ async function bootstrap() {
 
   if (configService.getOrThrow('NODE_ENV') === 'development') {
     const config = new DocumentBuilder()
-      .setTitle(configService.getOrThrow('APP_NAME'))
+      .setTitle(configService.getOrThrow('APP_TITLE'))
       .setDescription(configService.getOrThrow('APP_DESCRIPTION'))
       .setVersion('1.0')
       .addTag('vinyl')
@@ -23,7 +23,6 @@ async function bootstrap() {
 
   app.use(cookieParser(configService.getOrThrow('COOKIE_SECRET')));
 
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(configService.getOrThrow('PORT'));
 }
-// eslint-disable-next-line @typescript-eslint/no-floating-promises
-bootstrap();
+await bootstrap();

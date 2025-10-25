@@ -1,11 +1,20 @@
-import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryColumn } from 'typeorm';
-import { AbstractEntity } from './abstract.entity';
-import { Review } from './review.entity';
-import { OrderItem } from './orderItem.entity';
-import { Author } from './author.entity';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  OneToMany,
+  PrimaryColumn,
+  Relation,
+} from 'typeorm';
+import { AbstractEntity } from './abstract.entity.js';
+import { Review } from './review.entity.js';
+import { OrderItem } from './orderItem.entity.js';
+import { Author } from './author.entity.js';
 
+@Entity()
 export class Vinyl extends AbstractEntity<Vinyl> {
-  // Note: I'm assuming AbstractEntity is not decorated with @Entity()
   @Column({ type: 'varchar', length: 100 })
   name: string;
 
@@ -57,10 +66,10 @@ export class Vinyl extends AbstractEntity<Vinyl> {
   @Column({ type: 'date', nullable: true })
   releaseDate: Date;
 
-  @Column({ type: 'timestamp', default: 'CURRENT_TIMESTAMP' })
+  @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 
-  @Column({ type: 'timestamp', default: 'CURRENT_TIMESTAMP' })
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   updatedAt: Date;
 
   @Column({ type: 'timestamp', nullable: true })
@@ -68,31 +77,22 @@ export class Vinyl extends AbstractEntity<Vinyl> {
 
   /// Relationships
   @OneToMany(() => Review, (review) => review.vinyl)
-  reviews: Review[];
+  reviews: Relation<Review>[];
 
   @OneToMany(() => OrderItem, (orderItem) => orderItem.vinyl)
-  orderItems: OrderItem[];
+  orderItems: Relation<OrderItem>[];
 
   @ManyToMany(() => Author, (author) => author.vinyls)
   @JoinTable()
-  authors: Author[];
+  authors: Relation<Author>[];
 
   @ManyToMany(() => Style, (style) => style.vinyls)
   @JoinTable()
-  styles: Style[];
+  styles: Relation<Style>[];
 
   @ManyToMany(() => Genre, (genre) => genre.vinyls)
   @JoinTable()
-  genres: Genre[];
-}
-
-@Entity()
-export class Style {
-  @PrimaryColumn()
-  name: string;
-
-  @ManyToMany(() => Vinyl, (vinyl) => vinyl.styles)
-  vinyls: Vinyl[];
+  genres: Relation<Genre>[];
 }
 
 @Entity()
@@ -100,6 +100,17 @@ export class Genre {
   @PrimaryColumn()
   name: string;
 
+  /// Relationships
   @ManyToMany(() => Vinyl, (vinyl) => vinyl.genres)
-  vinyls: Vinyl[];
+  vinyls: Relation<Vinyl>[];
+}
+
+@Entity()
+export class Style {
+  @PrimaryColumn()
+  name: string;
+
+  /// Relationships
+  @ManyToMany(() => Vinyl, (vinyl) => vinyl.styles)
+  vinyls: Relation<Vinyl>[];
 }

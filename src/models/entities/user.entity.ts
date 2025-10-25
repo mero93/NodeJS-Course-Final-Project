@@ -1,11 +1,11 @@
-import { Column, OneToMany } from 'typeorm';
-import { AbstractEntity } from './abstract.entity';
-import { Review } from './review.entity';
-import { Order } from './order.entity';
-import { OAuthAccount } from './oAuthAccount.entity';
+import { Column, Entity, OneToMany, Relation } from 'typeorm';
+import { AbstractEntity } from './abstract.entity.js';
+import { Review } from './review.entity.js';
+import { Order } from './order.entity.js';
+import { OAuthAccount } from './OAuthAccount.entity.js';
 
+@Entity()
 export class User extends AbstractEntity<User> {
-  // Note: I'm assuming AbstractEntity is not decorated with @Entity()
   @Column({ type: 'varchar', length: 100 })
   name: string;
 
@@ -29,11 +29,11 @@ export class User extends AbstractEntity<User> {
 
   /// Relationships
   @OneToMany(() => Order, (order) => order.user)
-  orders: Order[];
+  orders: Relation<Order>[];
 
   @OneToMany(() => Review, (review) => review.user)
-  reviews: Review[];
+  reviews: Relation<Review>[];
 
   @OneToMany(() => OAuthAccount, (oAuthAccount) => oAuthAccount.user)
-  oAuthAccounts: OAuthAccount[];
+  OAuthAccounts: Relation<OAuthAccount>[];
 }
