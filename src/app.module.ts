@@ -7,6 +7,8 @@ import { ConfigModule } from '@nestjs/config';
 import { OrderModule } from './modules/order/order.module.js';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TasksModule } from './tasks/tasks.module.js';
+import { StripeModule } from './stripe/stripe.module.js';
+import { MailModule } from './mailer/mail.module.js';
 
 @Module({
   imports: [
@@ -18,6 +20,8 @@ import { TasksModule } from './tasks/tasks.module.js';
     ScheduleModule.forRoot(),
     OrderModule,
     TasksModule,
+    StripeModule,
+    MailModule,
   ],
 })
 export class AppModule {}
