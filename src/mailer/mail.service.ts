@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { TokenUser } from '../models/interfaces/user.js';
+import { TokenUser } from '../models/interfaces/user.interface.js';
 import { MailerService } from '@nestjs-modules/mailer';
 import { ConfigService } from '@nestjs/config';
-import { Order, orderStatus } from '../models/interfaces/order.js';
+import { Order, orderStatus } from '../models/interfaces/order.interface.js';
 
 @Injectable()
 export class MailService {

@@ -82,15 +82,15 @@ export class Vinyl extends AbstractEntity<Vinyl> {
   @OneToMany(() => OrderItem, (orderItem) => orderItem.vinyl)
   orderItems: Relation<OrderItem>[];
 
-  @ManyToMany(() => Author, (author) => author.vinyls)
+  @ManyToMany(() => Author, (author) => author.vinyls, { cascade: true, eager: true })
   @JoinTable()
   authors: Relation<Author>[];
 
-  @ManyToMany(() => Style, (style) => style.vinyls)
+  @ManyToMany(() => Style, (style) => style.vinyls, { cascade: true, eager: true })
   @JoinTable()
   styles: Relation<Style>[];
 
-  @ManyToMany(() => Genre, (genre) => genre.vinyls)
+  @ManyToMany(() => Genre, (genre) => genre.vinyls, { cascade: true, eager: true })
   @JoinTable()
   genres: Relation<Genre>[];
 }

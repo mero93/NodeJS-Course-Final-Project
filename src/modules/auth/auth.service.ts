@@ -1,11 +1,16 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from '../../models/entities/user.entity.js';
+import { User, UserRole } from '../../models/entities/user.entity.js';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
-import { FullPayload, OAuthUser, Payload, TokenUser } from '../../models/interfaces/user.js';
+import {
+  FullPayload,
+  OAuthUser,
+  Payload,
+  TokenUser,
+} from '../../models/interfaces/user.interface.js';
 import { Response } from 'express';
 import { RegisterUserDto } from '../../models/dtos/user.dto.js';
 import { RevokedToken } from '../../models/entities/revokedToken.entity.js';
@@ -26,14 +31,20 @@ export class AuthService {
   ) {}
 
   async validateUser(email: string, password: string): Promise<TokenUser> {
-    const user = await this.usersRepository.findOne({ where: { email } });
+    const user = await this.usersRepository.findOne({ where: { email }, relations: ['roles'] });
     if (user && (await bcrypt.compare(password, user.password))) {
-      return { id: user.id, name: user.name, lastName: user.lastName, email: user.email };
+      return {
+        id: user.id,
+        name: user.name,
+        lastName: user.lastName,
+        email: user.email,
+        roles: user.roles.map((r) => r.role),
+      };
     }
     throw new UnauthorizedException('Invalid credentials');
   }
 
-  async register(user: RegisterUserDto, response: Response) {
+  async register(user: RegisterUserDto, response: Response, roles: string[] = ['user']) {
     if (await this.usersRepository.findOneBy({ email: user.email })) {
       throw new UnauthorizedException('User already exists');
     }
@@ -43,13 +54,25 @@ export class AuthService {
       password: await bcrypt.hash(user.password, 10),
     });
 
+    const userRoles: UserRole[] = roles.map((role) => ({ role }) as UserRole);
+
+    newUser.roles = userRoles;
+
+    await this.usersRepository.save(newUser);
+
     return this.signTokens(
-      { id: newUser.id, name: newUser.name, lastName: newUser.lastName, email: newUser.email },
+      {
+        id: newUser.id,
+        name: newUser.name,
+        lastName: newUser.lastName,
+        email: newUser.email,
+        roles,
+      },
       response
     );
   }
 
-  login(user: TokenUser, response: Response): { accessToken: string } {
+  login(user: TokenUser, response: Response): string {
     return this.signTokens(user, response);
   }
 
@@ -57,7 +80,7 @@ export class AuthService {
     try {
       await this.revokedTokensRepository.save({
         jti: fullToken.jti,
-        expiresAt: fullToken.exp ? new Date(fullToken.exp * 1000) : null,
+        expiresAt: fullToken.exp ? new Date(fullToken.exp * 1000) : undefined,
       });
     } catch {
       // should add logic for handling token already being revoked
@@ -73,7 +96,7 @@ export class AuthService {
 
     const existingOAuthAccount = await this.oauthAccountsRepository.findOne({
       where: { provider, providerAccountId },
-      relations: ['user'],
+      relations: ['user', 'user.roles'],
     });
 
     if (existingOAuthAccount) {
@@ -82,13 +105,18 @@ export class AuthService {
         name: existingOAuthAccount.user.name,
         lastName: existingOAuthAccount.user.lastName,
         email: existingOAuthAccount.user.email,
+        roles: existingOAuthAccount.user.roles.map((r) => r.role),
       };
     }
 
     let user = await this.usersRepository.findOneBy({ email: userData.email });
 
     if (!user) {
-      user = await this.usersRepository.save(userData);
+      user = await this.usersRepository.save({
+        ...userData,
+        isOAuthUser: true,
+        roles: [{ role: 'user' }],
+      });
     }
 
     await this.oauthAccountsRepository.save({
@@ -97,7 +125,14 @@ export class AuthService {
       user,
     });
 
-    return { id: user.id, name: user.name, lastName: user.lastName, email: user.email };
+    if (!user.isOAuthUser) {
+      user.isOAuthUser = true;
+      await this.usersRepository.save(user);
+    }
+
+    const roles = user ? user.roles.map((r) => r.role) : ['user'];
+
+    return { id: user.id, name: user.name, lastName: user.lastName, email: user.email, roles };
   }
 
   async refresh(fullToken: FullPayload, response: Response) {
@@ -106,10 +141,15 @@ export class AuthService {
       throw new UnauthorizedException('Refresh token has already been used');
     }
 
-    await this.revokedTokensRepository.save({
-      jti: fullToken.jti,
-      expiresAt: new Date(fullToken.exp * 1000),
-    });
+    try {
+      await this.revokedTokensRepository.save({
+        jti: fullToken.jti,
+        expiresAt: fullToken.exp ? new Date(fullToken.exp * 1000) : undefined,
+      });
+    } catch (error) {
+      // In case of concurrent request
+      throw new UnauthorizedException('Refresh token has already been used');
+    }
 
     return this.signTokens(
       {
@@ -117,17 +157,74 @@ export class AuthService {
         name: fullToken.name,
         lastName: fullToken.lastName,
         email: fullToken.email,
+        roles: fullToken.roles,
       },
       response
     );
   }
 
-  private signTokens(user: TokenUser, response: Response): { accessToken: string } {
+  async addRole(userId: number, role: string, response: Response) {
+    const user = await this.usersRepository.findOne({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    // If user already has the role, do nothing.
+    if (user.roles.some((r) => r.role === role)) {
+      return;
+    }
+
+    user.roles.push({ role } as UserRole);
+
+    await this.usersRepository.save(user);
+
+    return this.signTokens(
+      {
+        ...user,
+        roles: user.roles.map((r) => r.role),
+      },
+      response
+    );
+  }
+
+  async removeRole(userId: number, role: string, response: Response) {
+    const user = await this.usersRepository.findOne({
+      where: { id: userId },
+      relations: ['roles'],
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    // If user doesn't have the role, do nothing.)
+    if (!user.roles.some((r) => r.role === role)) {
+      return;
+    }
+
+    user.roles = user.roles.filter((r) => r.role !== role);
+
+    await this.usersRepository.save(user);
+
+    return this.signTokens(
+      {
+        ...user,
+        roles: user.roles.map((r) => r.role),
+      },
+      response
+    );
+  }
+
+  private signTokens(user: TokenUser, response: Response): string {
     const payload: Payload = {
       sub: user.id,
       email: user.email,
       name: user.name,
       lastName: user.lastName,
+      roles: user.roles,
     };
 
     const accessToken = this.jwtService.sign(payload, {
@@ -145,6 +242,6 @@ export class AuthService {
       path: '/',
     });
 
-    return { accessToken };
+    return accessToken;
   }
 }

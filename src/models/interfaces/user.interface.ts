@@ -5,9 +5,10 @@ export interface TokenUser {
   name: string;
   lastName: string;
   email: string;
+  roles: string[];
 }
 
-export interface OAuthUser extends Omit<TokenUser, 'id'> {
+export interface OAuthUser extends Omit<TokenUser, 'id' | 'roles'> {
   provider: string;
   providerAccountId: string;
   avatar?: string;
@@ -18,6 +19,7 @@ export interface Payload {
   name: string;
   lastName: string;
   email: string;
+  roles: string[];
 }
 
 export interface FullPayload extends Payload {
@@ -26,7 +28,7 @@ export interface FullPayload extends Payload {
 }
 
 export interface AuthRequest extends Request {
-  user: TokenUser;
+  user?: TokenUser;
 }
 
 export interface RefreshRequest extends Request {

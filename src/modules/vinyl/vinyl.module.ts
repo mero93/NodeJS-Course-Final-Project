@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { VinylService } from './vinyl.service.js';
-import { VinylController } from './vinyl.controller.js';
+import { VinylsService } from './vinyls.service.js';
+import { VinylController } from './vinyls.controller.js';
 
 @Module({
   controllers: [VinylController],
-  providers: [VinylService],
+  providers: [VinylsService],
 })
 export class VinylModule {}

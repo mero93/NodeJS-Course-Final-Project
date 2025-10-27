@@ -32,15 +32,19 @@ export class ReviewSubscriber implements EntitySubscriberInterface<Review> {
   }
 
   private async updateAverageRating(manager: EntityManager, vinylId: number) {
-    console.log(`Updating average rating for Vinyl with ID ${vinylId}`);
+    console.log(`Updating rating average and count for Vinyl with ID ${vinylId}`);
 
-    const query: { avg: string } = await manager
+    const ratingStats = await manager
       .getRepository(Review)
       .createQueryBuilder('review')
       .select('AVG(review.rating)', 'avg')
+      .addSelect('COUNT(review.rating)', 'count')
       .where('review.vinylId = :vinylId', { vinylId })
-      .getRawOne();
+      .getRawOne<{ avg: string | null; count: string }>();
 
-    await manager.getRepository(Vinyl).update(vinylId, { ratingAvg: parseFloat(query.avg) || 0 });
+    const ratingAvg = parseFloat(ratingStats?.avg || '0');
+    const ratingCount = parseInt(ratingStats?.count || '0', 10);
+
+    await manager.getRepository(Vinyl).update(vinylId, { ratingAvg, ratingCount });
   }
 }

@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, Relation } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryColumn, Relation } from 'typeorm';
 import { AbstractEntity } from './abstract.entity.js';
 import { Review } from './review.entity.js';
 import { Order } from './order.entity.js';
@@ -36,4 +36,18 @@ export class User extends AbstractEntity<User> {
 
   @OneToMany(() => OAuthAccount, (oAuthAccount) => oAuthAccount.user, { cascade: true })
   OAuthAccounts: Relation<OAuthAccount>[];
+
+  @ManyToMany(() => UserRole, (userRole) => userRole.users, { cascade: true, eager: true })
+  @JoinTable()
+  roles: Relation<UserRole>[];
+}
+
+@Entity()
+export class UserRole {
+  @PrimaryColumn({ type: 'varchar', length: 100 })
+  role: string;
+
+  /// Relationships
+  @ManyToMany(() => User, (user) => user.roles)
+  users: Relation<User>[];
 }

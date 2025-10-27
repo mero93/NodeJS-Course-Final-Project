@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { config } from 'dotenv';
-import { User } from '../models/entities/user.entity.js';
+import { User, UserRole } from '../models/entities/user.entity.js';
 import { Genre, Style, Vinyl } from '../models/entities/vinyl.entity.js';
 import { Order } from '../models/entities/order.entity.js';
 import { OrderItem } from '../models/entities/orderItem.entity.js';
@@ -30,6 +30,7 @@ config();
         autoLoadEntities: true,
         entities: [
           User,
+          UserRole,
           Vinyl,
           Order,
           OrderItem,

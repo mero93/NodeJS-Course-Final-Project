@@ -11,6 +11,6 @@ export class OAuthAccount extends AbstractEntity<OAuthAccount> {
   providerAccountId: string;
 
   /// Relation
-  @ManyToOne(() => User, (user) => user.OAuthAccounts)
+  @ManyToOne(() => User, (user) => user.OAuthAccounts, { onDelete: 'CASCADE' })
   user: Relation<User>;
 }

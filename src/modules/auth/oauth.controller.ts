@@ -1,6 +1,6 @@
 import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
-import { TokenUser } from '../../models/interfaces/user.js';
+import { TokenUser } from '../../models/interfaces/user.interface.js';
 import { AuthService } from './auth.service.js';
 import { GitHubAuthGuard } from './auth.guard.js';
 

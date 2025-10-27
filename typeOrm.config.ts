@@ -4,7 +4,7 @@ import { config } from 'dotenv';
 import { Order } from './src/models/entities/order.entity.js';
 import { OrderItem } from './src/models/entities/orderItem.entity.js';
 import { Review } from './src/models/entities/review.entity.js';
-import { User } from './src/models/entities/user.entity.js';
+import { User, UserRole } from './src/models/entities/user.entity.js';
 import { Genre, Style, Vinyl } from './src/models/entities/vinyl.entity.js';
 import { ReviewSubscriber } from './src/models/subscribers/review.subscriber.js';
 import { Author } from './src/models/entities/author.entity.js';
@@ -26,6 +26,7 @@ export default new DataSource({
   migrations: ['./src/data/migrations/**'],
   entities: [
     User,
+    UserRole,
     Vinyl,
     Order,
     OrderItem,
