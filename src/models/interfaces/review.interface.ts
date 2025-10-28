@@ -3,9 +3,9 @@ export interface ReviewModel {
   vinylId: number;
   userName: string;
   userLastName: string;
-  userAvatar: string;
+  userAvatar?: string;
   rating: number;
-  comment: string;
+  comment?: string;
   createdAt: Date;
   updatedAt: Date;
 }

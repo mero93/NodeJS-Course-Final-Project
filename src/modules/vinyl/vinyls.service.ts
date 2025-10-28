@@ -109,8 +109,6 @@ export class VinylsService {
       throw new NotFoundException('Vinyl not found');
     }
 
-    // If new authors, genres, or styles are provided, map them to the expected entity shape.
-    // TypeORM's cascade will handle creating them if they don't exist.
     if (authors) {
       vinyl.authors = authors.map((name) => ({ name })) as Author[];
     }
