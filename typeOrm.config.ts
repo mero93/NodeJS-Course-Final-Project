@@ -10,7 +10,7 @@ import { Author } from './src/models/entities/author.entity.js';
 import { RevokedToken } from './src/models/entities/revokedToken.entity.js';
 import { VinylSubscriber } from './src/models/subscribers/vinyl.subscriber.js';
 import { DataSourceOptions } from 'typeorm';
-import { OAuthAccount } from './src/models/entities/oauthAccount.js';
+import { OAuthAccount } from './src/models/entities/oAuthAccount.entity.js';
 
 config();
 

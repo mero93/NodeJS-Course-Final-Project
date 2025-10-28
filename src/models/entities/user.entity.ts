@@ -2,7 +2,7 @@ import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryColumn, Relati
 import { AbstractEntity } from './abstract.entity.js';
 import { Review } from './review.entity.js';
 import { Order } from './order.entity.js';
-import { OAuthAccount } from './oauthAccount.js';
+import { OAuthAccount } from './oAuthAccount.entity.js';
 
 @Entity()
 export class User extends AbstractEntity<User> {
