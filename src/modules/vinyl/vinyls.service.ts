@@ -64,6 +64,7 @@ export class VinylsService {
       genres: vinyl.genres.map((g) => g.name),
       styles: vinyl.styles.map((s) => s.name),
       reviews: vinyl.reviews.map((r) => ({
+        id: r.id,
         userId: r.userId,
         vinylId: r.vinylId,
         userName: r.user.name,

@@ -3,19 +3,21 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
-  PrimaryColumn,
   Relation,
+  Unique,
   UpdateDateColumn,
 } from 'typeorm';
 import { User } from './user.entity.js';
 import { Vinyl } from './vinyl.entity.js';
+import { AbstractEntity } from './abstract.entity.js';
 
 @Entity()
-export class Review {
-  @PrimaryColumn()
+@Unique(['userId', 'vinylId'])
+export class Review extends AbstractEntity<Review> {
+  @Column()
   userId: number;
 
-  @PrimaryColumn()
+  @Column()
   vinylId: number;
 
   @Column({ type: 'int' })

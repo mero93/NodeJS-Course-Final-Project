@@ -22,6 +22,7 @@ export class ReviewsService {
 
     return reviews.map((review) => {
       return {
+        id: review.id,
         userId: review.userId,
         vinylId: review.vinylId,
         userName: review.user.name,
@@ -43,6 +44,7 @@ export class ReviewsService {
 
     return reviews.map((review) => {
       return {
+        id: review.id,
         userId: review.userId,
         vinylId: review.vinylId,
         userName: review.user.name,
@@ -99,7 +101,7 @@ export class ReviewsService {
     };
   }
 
-  async deleteReview(vinylId: number, userId: number): Promise<void> {
+  async deleteUserReview(vinylId: number, userId: number): Promise<void> {
     const review = await this.reviewsRepository.findOne({
       where: { vinylId: vinylId, userId: userId },
     });
@@ -107,6 +109,18 @@ export class ReviewsService {
     if (!review) {
       throw new NotFoundException('Review not found');
     }
+    await this.reviewsRepository.remove(review);
+  }
+
+  async deleteReviewById(reviewId: number) {
+    const review = await this.reviewsRepository.findOne({
+      where: { id: reviewId },
+    });
+
+    if (!review) {
+      throw new NotFoundException('Review not found');
+    }
+
     await this.reviewsRepository.remove(review);
   }
 }

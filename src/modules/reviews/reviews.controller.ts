@@ -3,6 +3,7 @@ import { ReviewsService } from './reviews.service.js';
 import { AccessAuthGuard } from '../auth/auth.guard.js';
 import { CreateReviewDto, UpdateReviewDto } from '../../models/dtos/review.dto.js';
 import { AuthRequest } from '../../models/interfaces/user.interface.js';
+import { Roles } from '../auth/roles.decorator.js';
 
 @Controller('reviews')
 export class ReviewsController {
@@ -27,9 +28,16 @@ export class ReviewsController {
     return await this.reviewsService.updateReview(body, req.user!.id);
   }
 
-  // Admin Guard
-  @Delete('delete/:vinylId')
-  async deleteReview(@Req() req: AuthRequest, @Param('vinylId') vinylId: number) {
-    return await this.reviewsService.deleteReview(vinylId, req.user!.id);
+  @UseGuards(AccessAuthGuard)
+  @Delete('delete-user-review/:vinylId')
+  async deleteUserReview(@Req() req: AuthRequest, @Param('vinylId') vinylId: number) {
+    return await this.reviewsService.deleteUserReview(vinylId, req.user!.id);
+  }
+
+  @Roles('admin')
+  @UseGuards(AccessAuthGuard)
+  @Delete('delete-review/:reviewId')
+  async deleteReviewById(@Req() req: AuthRequest, @Param('reviewId') reviewId: number) {
+    return await this.reviewsService.deleteReviewById(reviewId);
   }
 }
