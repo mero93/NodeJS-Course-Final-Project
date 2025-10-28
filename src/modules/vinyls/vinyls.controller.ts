@@ -8,7 +8,7 @@ import { Vinyl } from '../../models/entities/vinyl.entity.js';
 import { VinylModel } from '../../models/interfaces/vinyl.interface.js';
 
 @Controller('vinyls')
-export class VinylController {
+export class VinylsController {
   constructor(private readonly vinylService: VinylsService) {}
 
   @Get('')

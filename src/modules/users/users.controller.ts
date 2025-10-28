@@ -1,13 +1,13 @@
 import { Body, Controller, Delete, Get, Patch, Post, Req, Res, UseGuards } from '@nestjs/common';
-import { UserService } from './user.service.js';
+import { UsersService } from './users.service.js';
 import { AccessAuthGuard } from '../auth/auth.guard.js';
 import { AuthRequest } from '../../models/interfaces/user.interface.js';
 import { UpdateAvatarDto, UpdateUserDto } from '../../models/dtos/user.dto.js';
 import { Response } from 'express';
 
 @Controller('user')
-export class UserController {
-  constructor(private readonly userService: UserService) {}
+export class UsersController {
+  constructor(private readonly userService: UsersService) {}
   @Get('user-info')
   @UseGuards(AccessAuthGuard)
   async getUserInfo(@Req() req: AuthRequest) {

@@ -8,7 +8,7 @@ import { AuthService } from '../auth/auth.service.js';
 import { Response } from 'express';
 
 @Injectable()
-export class UserService {
+export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,

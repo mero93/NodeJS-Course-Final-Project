@@ -1,11 +1,8 @@
+import { OrderStatus } from '../entities/order.entity.js';
+
 export interface Order {
-  status: orderStatus;
+  status: OrderStatus;
   totalItemCount: number;
   orderTotal: number;
   createdAt: Date;
-}
-
-export enum orderStatus {
-  successful,
-  failed,
 }

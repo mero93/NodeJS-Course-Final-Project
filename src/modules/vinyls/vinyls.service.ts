@@ -1,10 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Brackets, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Genre, Style, Vinyl } from '../../models/entities/vinyl.entity.js';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Review } from '../../models/entities/review.entity.js';
 import { VinylModel } from '../../models/interfaces/vinyl.interface.js';
-import { ReviewModel } from '../../models/interfaces/review.interface.js';
 import { CreateVinylDto, UpdateVinylDto } from '../../models/dtos/vinyl.dto.js';
 import { Author } from '../../models/entities/author.entity.js';
 
