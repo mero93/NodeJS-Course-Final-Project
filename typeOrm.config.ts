@@ -40,6 +40,7 @@ const dataSourceOptions: DataSourceOptions = {
     Author,
     OAuthAccount,
     Style,
+    Genre,
   ],
   subscribers: [ReviewSubscriber, VinylSubscriber],
 };
