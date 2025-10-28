@@ -18,16 +18,18 @@ export class Vinyl extends AbstractEntity<Vinyl> {
   @Column({ type: 'varchar', length: 100 })
   name: string;
 
-  @Column({ type: 'varchar', length: 500 })
+  @Column({ type: 'varchar', length: 5000 })
   description: string;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  image: string;
 
   @Column({ type: 'decimal', precision: 10, scale: 2, default: 0.0 })
   price: number;
 
   @Column({
     type: 'int',
-    nullable: true,
-    default: null,
+    default: 0,
   })
   inStock: number;
 
@@ -46,6 +48,14 @@ export class Vinyl extends AbstractEntity<Vinyl> {
     default: null,
   })
   ratingCount: number;
+
+  @Column({
+    type: 'int',
+    unique: true,
+    nullable: true,
+    default: null,
+  })
+  discogId: number;
 
   @Column({
     type: 'decimal',

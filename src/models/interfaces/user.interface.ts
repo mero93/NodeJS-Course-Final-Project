@@ -8,6 +8,11 @@ export interface TokenUser {
   roles: string[];
 }
 
+export interface InfoUser extends Omit<TokenUser, 'roles'> {
+  birthDate?: Date;
+  avatar?: string;
+}
+
 export interface OAuthUser extends Omit<TokenUser, 'id' | 'roles'> {
   provider: string;
   providerAccountId: string;

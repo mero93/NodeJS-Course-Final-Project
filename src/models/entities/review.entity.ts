@@ -1,4 +1,12 @@
-import { Column, Entity, ManyToOne, PrimaryColumn, Relation } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryColumn,
+  Relation,
+  UpdateDateColumn,
+} from 'typeorm';
 import { User } from './user.entity.js';
 import { Vinyl } from './vinyl.entity.js';
 
@@ -15,6 +23,12 @@ export class Review {
 
   @Column({ type: 'varchar', length: 500, nullable: true })
   comment: string;
+
+  @CreateDateColumn({ type: 'timestamp' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ type: 'timestamp' })
+  updatedAt: Date;
 
   /// Relationships
   @ManyToOne(() => User, (user) => user.reviews, { onDelete: 'CASCADE' })

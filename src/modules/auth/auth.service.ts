@@ -218,7 +218,7 @@ export class AuthService {
     );
   }
 
-  private signTokens(user: TokenUser, response: Response): string {
+  signTokens(user: TokenUser, response: Response): string {
     const payload: Payload = {
       sub: user.id,
       email: user.email,

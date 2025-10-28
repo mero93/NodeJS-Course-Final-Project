@@ -29,5 +29,6 @@ import { RefreshJwtStrategy } from './strategies/refresh.strategy.js';
   ],
   controllers: [AuthController, AuthGithubController],
   providers: [AuthService, LocalStrategy, GithubStrategy, AccessJwtStrategy, RefreshJwtStrategy],
+  exports: [AuthService],
 })
 export class AuthModule {}

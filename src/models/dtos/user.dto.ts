@@ -1,5 +1,14 @@
-import { IsEmail, IsString, Length, Matches, ValidateIf } from 'class-validator';
-import { Transform } from 'class-transformer';
+import {
+  IsDate,
+  IsEmail,
+  IsOptional,
+  IsString,
+  IsUrl,
+  Length,
+  Matches,
+  ValidateIf,
+} from 'class-validator';
+import { Exclude, Transform, Type } from 'class-transformer';
 import { AtLeastOneFieldIsRequired, MatchPasswords } from './customClassValidators.js';
 
 export class LoginUserDto {
@@ -52,6 +61,11 @@ export class RegisterUserDto {
   @Transform(({ value }: { value: string }) => value.toLowerCase())
   public readonly email: string;
 
+  @IsOptional()
+  @IsDate()
+  @Type(() => Date)
+  public readonly birthDate: Date;
+
   @IsString()
   @Length(4, 32, {
     message: 'Password must be at least 4 and at most 32 characters long',
@@ -67,7 +81,7 @@ export class RegisterUserDto {
 }
 
 export class UpdateUserDto {
-  @ValidateIf((object, value) => value !== undefined)
+  @IsOptional()
   @IsString()
   @Length(3, 16, {
     message: 'Name must be at least 3 and at most 16 characters long',
@@ -77,7 +91,7 @@ export class UpdateUserDto {
   })
   public readonly name?: string;
 
-  @ValidateIf((object, value) => value !== undefined)
+  @IsOptional()
   @IsString()
   @Length(3, 16, {
     message: 'Last name must be at least 3 and at most 16 characters long',
@@ -87,6 +101,17 @@ export class UpdateUserDto {
   })
   public readonly lastName?: string;
 
-  @AtLeastOneFieldIsRequired(['name', 'lastName'])
+  @IsOptional()
+  @IsDate()
+  @Type(() => Date)
+  public readonly birthDate?: Date;
+
+  @AtLeastOneFieldIsRequired(['name', 'lastName', 'birthDate'])
+  @Exclude()
   private readonly _placeholder = '';
+}
+
+export class UpdateAvatarDto {
+  @IsUrl({}, { message: 'A valid image URL must be provided.' })
+  public readonly imgUrl: string;
 }
