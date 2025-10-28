@@ -110,6 +110,10 @@ export class Genre {
   @PrimaryColumn()
   name: string;
 
+  constructor(entity: Partial<Genre>) {
+    Object.assign(this, entity);
+  }
+
   /// Relationships
   @ManyToMany(() => Vinyl, (vinyl) => vinyl.genres)
   vinyls: Relation<Vinyl>[];
@@ -119,6 +123,10 @@ export class Genre {
 export class Style {
   @PrimaryColumn()
   name: string;
+
+  constructor(entity: Partial<Style>) {
+    Object.assign(this, entity);
+  }
 
   /// Relationships
   @ManyToMany(() => Vinyl, (vinyl) => vinyl.styles)

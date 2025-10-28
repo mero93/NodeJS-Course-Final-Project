@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { config } from 'dotenv';
 import { User, UserRole } from '../models/entities/user.entity.js';
 import { Genre, Style, Vinyl } from '../models/entities/vinyl.entity.js';
 import { Order } from '../models/entities/order.entity.js';
@@ -13,39 +12,39 @@ import { VinylSubscriber } from '../models/subscribers/vinyl.subscriber.js';
 import { Author } from '../models/entities/author.entity.js';
 import { OAuthAccount } from '../models/entities/OAuthAccount.entity.js';
 
-config();
-
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-        host: configService.getOrThrow('POSTGRES_HOST'),
-        port: configService.getOrThrow<number>('POSTGRES_PORT'),
-        username: configService.getOrThrow('POSTGRES_USER'),
-        password: configService.getOrThrow('POSTGRES_PASSWORD'),
-        database: configService.getOrThrow('POSTGRES_DB'),
-        autoLoadEntities: true,
-        entities: [
-          User,
-          UserRole,
-          Vinyl,
-          Order,
-          OrderItem,
-          Review,
-          ReviewSubscriber,
-          RevokedToken,
-          VinylSubscriber,
-          Author,
-          OAuthAccount,
-          Style,
-          Genre,
-        ],
-        // migrations: ['./src/data/migrations/**'],
-        synchronize: true,
-      }),
+      useFactory: (configService: ConfigService) => {
+        const isProduction = configService.get('NODE_ENV') === 'production';
+        return {
+          type: 'postgres',
+          url: isProduction ? configService.getOrThrow('DATABASE_URL') : undefined,
+          host: !isProduction ? configService.getOrThrow('POSTGRES_HOST') : undefined,
+          port: !isProduction ? configService.getOrThrow<number>('POSTGRES_PORT') : undefined,
+          username: !isProduction ? configService.getOrThrow('POSTGRES_USER') : undefined,
+          password: !isProduction ? configService.getOrThrow('POSTGRES_PASSWORD') : undefined,
+          database: !isProduction ? configService.getOrThrow('POSTGRES_DB') : undefined,
+          ssl: isProduction ? { rejectUnauthorized: false } : undefined,
+          entities: [
+            User,
+            UserRole,
+            Vinyl,
+            Order,
+            OrderItem,
+            Review,
+            RevokedToken,
+            Author,
+            OAuthAccount,
+            Style,
+            Genre,
+          ],
+          subscribers: [ReviewSubscriber, VinylSubscriber],
+          synchronize: false,
+        };
+      },
     }),
   ],
 })

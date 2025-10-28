@@ -25,7 +25,7 @@ export class UsersController {
   async updateAvatar(@Req() req: AuthRequest, @Body() body: UpdateAvatarDto) {
     // Maybe if I have time I'll setup cloudinary API
 
-    return await this.userService.updateUserAvatar(req.user!.id, body.imgUrl);
+    return await this.userService.updateUserAvatar(req.user!.id, body.avatar);
   }
 
   @Delete('delete-account/:userId')

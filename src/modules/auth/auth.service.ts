@@ -49,7 +49,7 @@ export class AuthService {
       throw new UnauthorizedException('User already exists');
     }
 
-    const newUser = await this.usersRepository.save({
+    const newUser = this.usersRepository.create({
       ...user,
       password: await bcrypt.hash(user.password, 10),
     });

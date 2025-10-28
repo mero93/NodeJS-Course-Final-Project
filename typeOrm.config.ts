@@ -11,18 +11,23 @@ import { Author } from './src/models/entities/author.entity.js';
 import { OAuthAccount } from './src/models/entities/OAuthAccount.entity.js';
 import { RevokedToken } from './src/models/entities/revokedToken.entity.js';
 import { VinylSubscriber } from './src/models/subscribers/vinyl.subscriber.js';
+import { DataSourceOptions } from 'typeorm/browser';
 
 config();
 
 const configService = new ConfigService();
 
-export default new DataSource({
+const isProduction = configService.get('NODE_ENV') === 'production';
+
+const dataSourceOptions: DataSourceOptions = {
   type: 'postgres',
-  host: configService.getOrThrow('POSTGRES_HOST'),
-  port: configService.getOrThrow<number>('POSTGRES_PORT'),
-  database: configService.getOrThrow('POSTGRES_DB'),
-  username: configService.getOrThrow('POSTGRES_USER'),
-  password: configService.getOrThrow('POSTGRES_PASSWORD'),
+  url: isProduction ? configService.getOrThrow('DATABASE_URL') : undefined,
+  host: !isProduction ? configService.getOrThrow('POSTGRES_HOST') : undefined,
+  port: !isProduction ? configService.getOrThrow<number>('POSTGRES_PORT') : undefined,
+  database: !isProduction ? configService.getOrThrow('POSTGRES_DB') : undefined,
+  username: !isProduction ? configService.getOrThrow('POSTGRES_USER') : undefined,
+  password: !isProduction ? configService.getOrThrow('POSTGRES_PASSWORD') : undefined,
+  ssl: isProduction ? { rejectUnauthorized: false } : undefined,
   migrations: ['./src/data/migrations/**'],
   entities: [
     User,
@@ -31,13 +36,13 @@ export default new DataSource({
     Order,
     OrderItem,
     Review,
-    ReviewSubscriber,
     RevokedToken,
-    VinylSubscriber,
     Author,
     OAuthAccount,
     Style,
     Genre,
   ],
-  subscribers: [ReviewSubscriber],
-});
+  subscribers: [ReviewSubscriber, VinylSubscriber],
+};
+
+export default new DataSource(dataSourceOptions);

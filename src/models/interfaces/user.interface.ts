@@ -1,4 +1,5 @@
 import { Request } from 'express';
+import { UserRole } from '../entities/user.entity.js';
 
 export interface TokenUser {
   id: number;
@@ -11,6 +12,12 @@ export interface TokenUser {
 export interface InfoUser extends Omit<TokenUser, 'roles'> {
   birthDate?: Date;
   avatar?: string;
+}
+
+// For Seeder only
+export interface FullInfoUser extends Omit<InfoUser, 'id'> {
+  roles: UserRole[];
+  password: string;
 }
 
 export interface OAuthUser extends Omit<TokenUser, 'id' | 'roles'> {

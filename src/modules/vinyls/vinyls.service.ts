@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException, ValidationPipe } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Genre, Style, Vinyl } from '../../models/entities/vinyl.entity.js';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -6,31 +6,24 @@ import { Review } from '../../models/entities/review.entity.js';
 import { VinylModel } from '../../models/interfaces/vinyl.interface.js';
 import { CreateVinylDto, UpdateVinylDto } from '../../models/dtos/vinyl.dto.js';
 import { Author } from '../../models/entities/author.entity.js';
+import { DiscogsService } from '../../discogs/discogs.service.js';
+import { GetReleaseResponse } from '@lionralfs/discogs-client';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class VinylsService {
   constructor(
     @InjectRepository(Vinyl) private readonly vinylRepository: Repository<Vinyl>,
-    @InjectRepository(Review) private readonly reviewRepository: Repository<Review>
+    @InjectRepository(Review) private readonly reviewRepository: Repository<Review>,
+    private readonly discogsService: DiscogsService
   ) {}
+
   async findAll(userId?: number): Promise<VinylModel[]> {
     const queryBuilder = this.vinylRepository
       .createQueryBuilder('vinyl')
       .leftJoinAndSelect('vinyl.authors', 'author')
       .leftJoinAndSelect('vinyl.genres', 'genre')
-      .leftJoinAndSelect('vinyl.styles', 'style')
-      .addSelect([
-        'vinyl.id',
-        'vinyl.name',
-        'vinyl.description',
-        'vinyl.price',
-        'vinyl.inStock',
-        'vinyl.ratingAvg',
-        'vinyl.ratingCount',
-        'author.name',
-        'genre.name',
-        'style.name',
-      ]);
+      .leftJoinAndSelect('vinyl.styles', 'style');
 
     const firstReviewSubQuery = this.reviewRepository
       .createQueryBuilder('r')
@@ -46,7 +39,6 @@ export class VinylsService {
         { userId }
       );
 
-    // Now, join the reviews table, but only for the reviews identified in our subquery.
     queryBuilder.leftJoinAndSelect(
       'vinyl.reviews',
       'review',
@@ -138,5 +130,65 @@ export class VinylsService {
     }
 
     await this.vinylRepository.remove(vinyl);
+  }
+
+  async scrapeVinylsFromDiscogs(
+    page: number,
+    perPage: number
+  ): Promise<{ created: number; failed: number }> {
+    const searchResults = await this.discogsService.searchReleases(page, perPage);
+
+    const releaseDetailPromises = searchResults.results.map((result) =>
+      this.discogsService.getRelease(result.id).catch((err) => {
+        return null;
+      })
+    );
+
+    const releaseDetailsResponses = await Promise.all(releaseDetailPromises);
+
+    // Filter out nulls
+    const successfulReleases = releaseDetailsResponses
+      .filter((response) => response && response.data)
+      .map((response) => response!.data);
+
+    const validationPipe = new ValidationPipe({ skipMissingProperties: false, whitelist: true });
+    let createdCount = 0;
+
+    for (const release of successfulReleases) {
+      const createDto = this.mapDiscogsReleaseToDto(release);
+      try {
+        await validationPipe.transform(createDto, { type: 'body', metatype: CreateVinylDto });
+
+        await this.createVinyl(createDto);
+
+        createdCount++;
+      } catch {
+        // Skipping if failed validation
+      }
+    }
+
+    const result = {
+      created: createdCount,
+      failed: searchResults.results.length - createdCount,
+    };
+
+    return result;
+  }
+
+  private mapDiscogsReleaseToDto(release: GetReleaseResponse): CreateVinylDto {
+    return plainToInstance(CreateVinylDto, {
+      name: release.title,
+      description: release.notes,
+      price: 0,
+      inStock: 0,
+      releaseDate: release.released ? new Date(release.released) : undefined,
+      image: release.images?.[0]?.resource_url,
+      authors: release.artists?.map((artist) => artist.name) ?? [],
+      genres: release.genres ?? [],
+      styles: release.styles ?? [],
+      discogId: release.id,
+      ratingDiscogAvg: release.community?.rating?.average,
+      ratingDiscogCount: release.community?.rating?.count,
+    });
   }
 }

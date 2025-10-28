@@ -57,4 +57,15 @@ export class VinylsController {
       message: 'Vinyl deleted successfully',
     };
   }
+
+  @Post('scrape')
+  @Roles('admin')
+  @UseGuards(AccessAuthGuard, RolesGuard)
+  async scrapeVinylsFromDiscogs(@Body() body: { page: number; perPage: number }) {
+    const result = await this.vinylService.scrapeVinylsFromDiscogs(body.page, body.perPage);
+    return {
+      message: 'Vinyls scraped successfully',
+      result,
+    };
+  }
 }

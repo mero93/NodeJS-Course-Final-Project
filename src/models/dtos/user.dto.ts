@@ -66,6 +66,10 @@ export class RegisterUserDto {
   @Type(() => Date)
   public readonly birthDate: Date;
 
+  @IsOptional()
+  @IsUrl({}, { message: 'A valid image URL must be provided.' })
+  public readonly avatar: string;
+
   @IsString()
   @Length(4, 32, {
     message: 'Password must be at least 4 and at most 32 characters long',
@@ -113,5 +117,5 @@ export class UpdateUserDto {
 
 export class UpdateAvatarDto {
   @IsUrl({}, { message: 'A valid image URL must be provided.' })
-  public readonly imgUrl: string;
+  public readonly avatar: string;
 }
