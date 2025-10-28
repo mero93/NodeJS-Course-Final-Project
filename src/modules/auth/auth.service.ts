@@ -15,7 +15,7 @@ import { Response } from 'express';
 import { RegisterUserDto } from '../../models/dtos/user.dto.js';
 import { RevokedToken } from '../../models/entities/revokedToken.entity.js';
 import { randomUUID } from 'crypto';
-import { OAuthAccount } from '../../models/entities/OAuthAccount.entity.js';
+import { OAuthAccount } from '../../models/entities/oauthAccount.js';
 
 @Injectable()
 export class AuthService {

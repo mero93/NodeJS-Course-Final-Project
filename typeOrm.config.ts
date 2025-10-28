@@ -8,10 +8,10 @@ import { User, UserRole } from './src/models/entities/user.entity.js';
 import { Genre, Style, Vinyl } from './src/models/entities/vinyl.entity.js';
 import { ReviewSubscriber } from './src/models/subscribers/review.subscriber.js';
 import { Author } from './src/models/entities/author.entity.js';
-import { OAuthAccount } from './src/models/entities/OAuthAccount.entity.js';
 import { RevokedToken } from './src/models/entities/revokedToken.entity.js';
 import { VinylSubscriber } from './src/models/subscribers/vinyl.subscriber.js';
 import { DataSourceOptions } from 'typeorm/browser';
+import { OAuthAccount } from './src/models/entities/oauthAccount.js';
 
 config();
 
@@ -40,7 +40,6 @@ const dataSourceOptions: DataSourceOptions = {
     Author,
     OAuthAccount,
     Style,
-    Genre,
   ],
   subscribers: [ReviewSubscriber, VinylSubscriber],
 };

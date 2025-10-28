@@ -10,7 +10,7 @@ import { ReviewSubscriber } from '../models/subscribers/review.subscriber.js';
 import { RevokedToken } from '../models/entities/revokedToken.entity.js';
 import { VinylSubscriber } from '../models/subscribers/vinyl.subscriber.js';
 import { Author } from '../models/entities/author.entity.js';
-import { OAuthAccount } from '../models/entities/OAuthAccount.entity.js';
+import { OAuthAccount } from '../models/entities/oauthAccount.js';
 
 @Module({
   imports: [
