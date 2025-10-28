@@ -19,7 +19,6 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "prepare": "husky",
     "typeorm": "typeorm-ts-node-esm",
     "typeorm:migration-generate": "npm run typeorm -- -d ./typeOrm.config.ts migration:generate ./src/data/migrations/Initial",
     "typeorm:migration-create": "npm run typeorm -- migration:create ./src/data/migrations/Initial",
