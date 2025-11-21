@@ -11,16 +11,14 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
 
-  if (configService.getOrThrow('NODE_ENV') === 'development') {
-    const config = new DocumentBuilder()
-      .setTitle(configService.getOrThrow('APP_TITLE'))
-      .setDescription(configService.getOrThrow('APP_DESCRIPTION'))
-      .setVersion('1.0')
-      .addTag('vinyl')
-      .build();
-    const documentFactory = () => SwaggerModule.createDocument(app, config);
-    SwaggerModule.setup('api', app, documentFactory);
-  }
+  const config = new DocumentBuilder()
+    .setTitle(configService.getOrThrow('APP_TITLE'))
+    .setDescription(configService.getOrThrow('APP_DESCRIPTION'))
+    .setVersion('1.0')
+    .addTag('vinyl')
+    .build();
+  const documentFactory = () => SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, documentFactory);
 
   app.use(cookieParser(configService.getOrThrow('COOKIE_SECRET')));
 
